@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Isingoma Arthur | CS Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:   #0f172a;
+      --dark:   #1f2937;
+      --card:   #111827;
+      --border: #1e3a5f;
+      --blue:   #60a5fa;
+      --cyan:   #22d3ee;
+      --gold:   #fbbf24;
+      --text:   #e2e8f0;
+      --muted:  #94a3b8;
+      --glow:   rgba(96,165,250,0.15);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS BACKGROUND ─────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: box-shadow 0.3s;
+    }
+
+    header.scrolled { box-shadow: 0 4px 30px rgba(96,165,250,0.1); }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+    }
+    .logo span { color: var(--cyan); }
+
+    nav ul { list-style: none; display: flex; gap: 6px; }
+
+    nav a {
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 5px 11px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: all 0.25s;
+      letter-spacing: 0.03em;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--blue);
+      border-color: var(--border);
+      background: var(--glow);
+    }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--blue); border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 8% 80px;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text { flex: 1; min-width: 280px; }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--cyan);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.35s forwards;
+    }
+
+    .hero-text h1 .accent { color: var(--blue); }
+
+    .hero-role {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.5s forwards;
+    }
+
+    /* typing cursor */
+    .hero-role::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-text p {
+      color: var(--muted);
+      max-width: 480px;
+      font-size: 1rem;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.65s forwards;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s forwards;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--navy);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: all 0.25s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--cyan); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(96,165,250,0.35); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--blue);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--blue); background: var(--glow); transform: translateY(-2px); }
+
+    /* avatar */
+    .hero-avatar {
+      flex-shrink: 0;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.8s 0.4s forwards;
+    }
+
+    .avatar-ring {
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      padding: 3px;
+      box-shadow: 0 0 40px rgba(96,165,250,0.25);
+    }
+
+    .avatar-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: var(--card);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+      line-height: 1.8;
+    }
+
+    .avatar-inner .icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+    /* orbiting badges */
+    .orbit-badge {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--cyan);
+      white-space: nowrap;
+      animation: float 3s ease-in-out infinite;
+    }
+    .orbit-badge:nth-child(2) { top: 10px; right: -20px; animation-delay: 0s; }
+    .orbit-badge:nth-child(3) { bottom: 30px; right: -30px; animation-delay: 1s; }
+    .orbit-badge:nth-child(4) { bottom: 10px; left: -20px; animation-delay: 2s; }
+
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    /* ── SHARED SECTION ─────────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 8%;
+    }
+
+    section:nth-child(even) { background: rgba(17,24,39,0.5); }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--cyan);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: var(--text);
+    }
+
+    .section-title .highlight { color: var(--blue); }
+
+    /* ── CARD ───────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(96,165,250,0.4);
+      box-shadow: 0 8px 30px rgba(96,165,250,0.1);
+      transform: translateY(-3px);
+    }
+
+    /* ── ABOUT ──────────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .about-bio { grid-column: 1 / -1; }
+
+    .about-bio p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue);
+      display: block;
+    }
+
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── EDUCATION ──────────────────────────────────────────── */
+    .edu-card { display: flex; gap: 20px; align-items: flex-start; }
+
+    .edu-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      background: var(--glow);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .edu-content h3 { font-size: 1.05rem; color: var(--text); margin-bottom: 4px; }
+    .edu-content .inst { color: var(--blue); font-weight: 500; font-size: 0.9rem; }
+    .edu-content .year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--muted); margin-top: 6px;
+    }
+    .edu-content p { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+
+    /* ── SKILLS ─────────────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-group h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+
+    .skill-item {
+      margin-bottom: 14px;
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+    }
+
+    .skill-name { color: var(--text); }
+    .skill-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .skill-bar {
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .skill-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--blue);
+      background: rgba(96,165,250,0.08);
+      border: 1px solid rgba(96,165,250,0.2);
+      border-radius: 6px;
+      padding: 3px 10px;
+    }
+
+    /* ── CERTIFICATIONS ─────────────────────────────────────── */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .cert-card {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+
+    .cert-icon {
+      font-size: 1.8rem; flex-shrink: 0;
+    }
+
+    .cert-info h4 { font-size: 0.95rem; color: var(--text); margin-bottom: 4px; }
+    .cert-info .issuer { font-size: 0.8rem; color: var(--blue); }
+    .cert-info .cert-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--muted); margin-top: 4px;
+    }
+    .cert-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.7rem;
+      background: rgba(34,211,238,0.1);
+      border: 1px solid rgba(34,211,238,0.25);
+      color: var(--cyan);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── AWARDS ─────────────────────────────────────────────── */
+    .awards-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .award-card { display: flex; gap: 16px; align-items: flex-start; }
+
+    .award-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0; margin-top: 7px;
+      box-shadow: 0 0 8px rgba(251,191,36,0.5);
+    }
+
+    .award-text h4 { font-size: 0.95rem; color: var(--text); }
+    .award-text p { font-size: 0.83rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── CV ─────────────────────────────────────────────────── */
+    .cv-inner {
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+
+    .cv-inner p { color: var(--muted); flex: 1; min-width: 200px; font-size: 0.95rem; }
+
+    /* ── CONTACT ────────────────────────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .contact-item {
+      display: flex; gap: 14px; align-items: center;
+    }
+
+    .contact-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--glow);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .contact-text strong { display: block; font-size: 0.78rem; color: var(--muted); font-weight: 400; margin-bottom: 2px; }
+    .contact-text span { font-size: 0.92rem; color: var(--text); }
+
+    .social-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+    .social-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.25s;
+    }
+    .social-btn:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 28px 8%;
+      background: var(--navy);
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+    }
+
+    footer .foot-accent { color: var(--blue); }
+
+    /* ── REVEAL ANIMATION ───────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── SCROLL-TO-TOP ──────────────────────────────────────── */
+    #top-btn {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      z-index: 200;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--navy);
+      border: none; cursor: pointer;
+      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(96,165,250,0.4);
+      opacity: 0; pointer-events: none;
+      transition: all 0.3s;
+    }
+    #top-btn.show { opacity: 1; pointer-events: all; }
+    #top-btn:hover { background: var(--cyan); transform: translateY(-3px); }
+
+    /* ── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; } to { opacity:1; }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav ul { display: none; flex-direction: column; gap: 6px; }
+      nav ul.open {
+        display: flex;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: rgba(15,23,42,0.97);
+        padding: 16px 8%;
+        border-bottom: 1px solid var(--border);
+      }
+      .hamburger { display: flex; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .about-bio { grid-column: 1; }
+      .hero { padding-top: 100px; }
+      .hero-text h1 { font-size: 2rem; }
+      .avatar-ring { width: 220px; height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- SCROLL TO TOP -->
+<button id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ── HEADER ──────────────────────────────────────────────── -->
+<header id="main-header">
+  <div class="logo">&lt;<span>Isingoma Arthur</span> /&gt;</div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav>
+    <ul id="nav-list">
+      <li><a href="#about">about</a></li>
+      <li><a href="#education">education</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#certifications">certs</a></li>
+      <li><a href="#awards">awards</a></li>
+      <li><a href="#cv">cv</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">// Computer Science Student</div>
+    <h1>Isingoma<br><span class="accent">Arthur</span></h1>
+    <div class="hero-role" id="hero-role">BSc Computer Science</div>
+    <p>
+      Building intelligent systems at the intersection of software,
+      networks. Based at Uganda Christian
+      University, Mukono.
+    </p>
+    <div class="hero-ctas">
+      <a href="#about" class="btn-primary">Explore Portfolio</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-avatar">
+    <div class="avatar-ring">
+      <div class="avatar-inner">
+        <img src="profile.jpeg" alt="Isingoma Arthur" style ="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block" />
+      </div>
+    </div>
+    <div class="orbit-badge">🌾 IoT / FarmGuard</div>
+    <div class="orbit-badge">🌐 Networking</div>
+    <div class="orbit-badge">🐍 Python / SQL</div>
+  </div>
+</section>
+
+<!-- ── ABOUT ────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="section-label">01 // overview</div>
+  <h2 class="section-title">About <span class="highlight">Me</span></h2>
+
+  <div class="about-grid reveal">
+    <div class="card about-bio">
+      <p>
+        I am a Bachelor of Science in Computer Science student at
+        <strong style="color:var(--blue)">Uganda Christian University (UCU)</strong>,
+        Faculty of Engineering, Design and Technology.
+          Besides my academic pursuits, I am passionate about basketball, music, and exploring the latest tech trends. I am eager to apply my skills in software development, networking, and IoT to real-world challenges and contribute to innovative projects.
+      </p>
+    </div>
+
+    <div class="card stat-box">
+      <span class="stat-num" data-target="3">0</span>
+      <div class="stat-label">Years of Study</div>
+    </div>
+
+    <div class="card stat-box">
+      <span class="stat-num" data-target="1">0</span>
+      <div class="stat-label">Projects Completed</div>
+    </div>
+
+    <div class="card stat-box">
+      <span class="stat-num" data-target="5">0</span>
+      <div class="stat-label">Technologies Mastered</div>
+    </div>
+
+     
+  </div>
+</section>
+
+<!-- ── EDUCATION ─────────────────────────────────────────────── -->
+<section id="education">
+  <div class="section-label">02 // background</div>
+  <h2 class="section-title">Education</h2>
+
+  <div class="card edu-card reveal">
+    <div class="edu-icon">🎓</div>
+    <div class="edu-content">
+      <h3>Bachelor of Science in Computer Science</h3>
+      <div class="inst">Uganda Christian University (UCU) — Mukono</div>
+      <div class="year">// 2025 – Present · Faculty of Engineering, Design &amp; Technology</div>
+      <p>
+        Core studies include data structures, discrete mathematics, networking,
+        database systems, and digital electronics. Hands-on projects in network design, IoT prototyping, and software development.
+      </p>
+      <div class="tags" style="margin-top:12px">
+        <span class="tag">Networking</span>
+        <span class="tag">Databases</span>
+        <span class="tag">IoT</span>
+        <span class="tag">Blender</span>
+        <span class="tag">SolidWorks</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ────────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="section-label">03 // tech stack</div>
+  <h2 class="section-title">Skills &amp; <span class="highlight">Technologies</span></h2>
+
+  <div class="skills-grid reveal" id="skills-grid">
+
+    <div class="card skill-group">
+      <h4>// Languages</h4>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Python</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">SQL</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">HTML / CSS</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">JavaScript</span><span class="skill-pct">55%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="55"></div></div>
+      </div>
+    </div>
+
+    <div class="card skill-group">
+      <h4>// Networking &amp; Systems</h4>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">OSPF / VLAN Design</span><span class="skill-pct">65%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+      </div>
+       
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">VirtualBox / VMs</span><span class="skill-pct">72%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Cisco Packet Tracer</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+      </div>
+    </div>
+
+    <div class="card skill-group">
+      <h4>// Tools &amp; Platforms</h4>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">SolidWorks / CAD</span><span class="skill-pct">65%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">MySQL / VS Code</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">LaTeX</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Blender</span><span class="skill-pct">49%</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="49"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CERTIFICATIONS ─────────────────────────────────────────── -->
+<section id="certifications">
+  <div class="section-label">04 // credentials</div>
+  <h2 class="section-title">Certifications</h2>
+
+  <div class="cert-grid reveal">
+    <div class="card cert-card">
+      <div class="cert-icon">🏅</div>
+      <div class="cert-info">
+         
+
+    <div class="card cert-card">
+      <div class="cert-icon">📜</div>
+      <div class="cert-info">
+        <h4>Certifications Coming Soon</h4>
+        <div class="issuer">Credentials to be added</div>
+        <div class="cert-year">// 2026+</div>
+        <span class="cert-badge">In Progress</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AWARDS ────────────────────────────────────────────────── -->
+<section id="awards">
+  <div class="section-label">05 // recognition</div>
+  <h2 class="section-title">Awards &amp; <span class="highlight">Achievements</span></h2>
+
+  <div class="card reveal">
+    <div class="awards-list">
+      <div class="award-card">
+        <div class="award-dot"></div>
+        <div class="award-text">
+        
+      <div class="award-card">
+        <div class="award-dot" style="background:var(--muted);box-shadow:none"></div>
+        <div class="award-text">
+          <h4>Awards &amp; achievements will be added here</h4>
+          <p style="font-style:italic">Stay tuned as I continue to grow and build.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CV ───────────────────────────────────────────────────── -->
+<section id="cv">
+  <div class="section-label">06 // resume</div>
+  <h2 class="section-title">Curriculum <span class="highlight">Vitae</span></h2>
+
+  <div class="card reveal">
+    <div class="cv-inner">
+      <p>
+        Download my full CV to learn more about my academic history,
+        project experience, and technical competencies. Updated June 2026.
+      </p>
+      <a href="Isingoma_Arthur_CV.pdf" download class="btn-primary">⬇ Download CV (PDF)</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ──────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="section-label">07 // reach out</div>
+  <h2 class="section-title">Contact <span class="highlight">Information</span></h2>
+
+  <div class="contact-grid reveal">
+    <div class="card contact-item">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-text">
+        <strong>Email</strong>
+        <span>isingomaarthur30@gmail.com</span>
+      </div>
+    </div>
+
+    <div class="card contact-item">
+      <div class="contact-icon">📞</div>
+      <div class="contact-text">
+        <strong>Phone</strong>
+        <span>0741 897 680</span>
+      </div>
+    </div>
+
+    <div class="card contact-item">
+      <div class="contact-icon">📍</div>
+      <div class="contact-text">
+        <strong>Location</strong>
+        <span>Lubowa, Seguku, Uganda</span>
+      </div>
+    </div>
+
+    <div class="card contact-item">
+      <div class="contact-icon">🏫</div>
+      <div class="contact-text">
+        <strong>University</strong>
+        <span>UCU, Mukono </span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px" class="reveal">
+    <div class="social-row">
+      <a href="https://www.linkedin.com/in/isingoma-arthur-89030739b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-btn" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://medium.com/@isingomaarthur30" class="social-btn" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 12h7v1.5h-7m0-4h7V11h-7m0 5.5h7V18h-7M21 4H3a2 2 0 00-2 2v13a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2zm-1 13H4V6.5h16V17z"/></svg>
+        Medium
+      </a>
+      <a href="mailto:isingomaarthur30@gmail.com" class="social-btn">
+        📧 Send Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer>
+  <p>&copy; 2026 <span class="foot-accent">Isingoma Arthur</span> · Built with ❤️ &amp; code · All Rights Reserved</p>
+</footer>
+
+<!-- ── SCRIPTS ──────────────────────────────────────────────── -->
+<script>
+/* ── CANVAS GRID ANIMATION ── */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let cols, rows, particles = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  cols = Math.floor(canvas.width / 45);
+  rows = Math.floor(canvas.height / 45);
+}
+
+function makeParticles() {
+  particles = [];
+  for (let i = 0; i < 55; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.5 + 0.5
+    });
+  }
+}
+
+function drawGrid() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // dots grid
+  ctx.fillStyle = 'rgba(96,165,250,0.12)';
+  for (let c = 0; c <= cols; c++) {
+    for (let r = 0; r <= rows; r++) {
+      ctx.beginPath();
+      ctx.arc(c * 45, r * 45, 1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  // moving particles + connections
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(34,211,238,0.5)';
+    ctx.fill();
+  });
+  particles.forEach((a, i) => {
+    particles.slice(i + 1).forEach(b => {
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 120) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(96,165,250,${0.12 * (1 - d / 120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(drawGrid);
+}
+
+resize(); makeParticles(); drawGrid();
+window.addEventListener('resize', () => { resize(); makeParticles(); });
+
+/* ── SCROLL EFFECTS ── */
+const header = document.getElementById('main-header');
+const topBtn = document.getElementById('top-btn');
+
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 40);
+  topBtn.classList.toggle('show', window.scrollY > 300);
+  highlightNav();
+});
+
+/* ── ACTIVE NAV ── */
+function highlightNav() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('nav a');
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+
+/* ── HAMBURGER ── */
+function toggleMenu() {
+  document.getElementById('nav-list').classList.toggle('open');
+}
+
+/* ── REVEAL ON SCROLL ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // skill bars
+      e.target.querySelectorAll('.skill-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+      // counters
+      e.target.querySelectorAll('[data-target]').forEach(el => {
+        animateCount(el, parseInt(el.dataset.target));
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── COUNT UP ── */
+function animateCount(el, target) {
+  let current = 0;
+  const step = target / 40;
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = Math.round(current) + (target >= 10 ? '+' : '');
+    if (current >= target) clearInterval(timer);
+  }, 35);
+}
+
+/* ── TYPING HERO ROLE ── */
+const roles = ['BSc Computer Science', 'Critical Thinker', 'IoT Developer', 'Problem Solver'];
+let ri = 0, ci = 0, deleting = false;
+const roleEl = document.getElementById('hero-role');
+
+function typeRole() {
+  const word = roles[ri];
+  roleEl.textContent = deleting ? word.slice(0, ci--) : word.slice(0, ci++);
+  if (!deleting && ci > word.length) { deleting = true; setTimeout(typeRole, 1400); return; }
+  if (deleting && ci < 0) { deleting = false; ri = (ri + 1) % roles.length; ci = 0; }
+  setTimeout(typeRole, deleting ? 60 : 95);
+}
+typeRole();
+</script>
+</body>
+</html>
